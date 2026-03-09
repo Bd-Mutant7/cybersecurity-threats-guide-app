@@ -21,7 +21,7 @@ A Next.js web application for the [Cybersecurity Threats & Vulnerabilities Guide
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cybersecurity-threats-guide-app
+git clone https://github.com/Bd-Mutant7/cybersecurity-threats-guide-app
 cd cybersecurity-threats-guide-app
 npm install
 ```
