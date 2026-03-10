@@ -15,7 +15,7 @@ export default function Footer() {
           fontSize: 11, fontWeight: 700, color: '#0f0f11',
         }}>⚿</div>
         <span style={{ fontSize: 13, color: '#3a3a4e' }}>
-          CyberGuide — Educational use only. Do not use these techniques on systems you don't own.
+          CyberGuide — Do not use these techniques on systems you don't own.
         </span>
       </div>
       <div style={{ display: 'flex', gap: 20 }}>
