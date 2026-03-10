@@ -5,11 +5,11 @@ import Footer from '../components/Footer';
 export const metadata = {
   title: 'CyberGuide — Cybersecurity Threats & Vulnerabilities',
   description:
-    'A comprehensive educational resource covering cybersecurity threats, detection scripts, and prevention strategies across network security, web applications, malware, social engineering, cryptography, and incident response.',
+    'A comprehensive resource covering cybersecurity threats, detection scripts, and prevention strategies across network security, web applications, malware, social engineering, cryptography, and incident response.',
   keywords: 'cybersecurity, threats, vulnerabilities, DDoS, SQL injection, XSS, malware, phishing, cryptography',
   openGraph: {
     title: 'CyberGuide — Cybersecurity Threats & Vulnerabilities',
-    description: 'Educational cybersecurity guide covering 20+ threats with detection and prevention strategies.',
+    description: 'Cybersecurity guide covering 20+ threats with detection and prevention strategies.',
     type: 'website',
   },
 };
