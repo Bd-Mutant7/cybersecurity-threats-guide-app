@@ -145,7 +145,7 @@ export default function AskPage() {
       </div>
 
       <p style={{ fontSize: 11, color: '#3a3a4e', marginTop: 12, textAlign: 'center' }}>
-        For educational purposes only. Always verify information with official security resources.
+        Always verify information with official security resources.
       </p>
     </div>
   );
