@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic';
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import ThreatCard from '../../../components/ThreatCard';
-import { categories, getCategoryBySlug, getThreatsByCategory } from '../../../lib/data';
+import ThreatCard from '../../components/ThreatCard';
+import { categories, getCategoryBySlug, getThreatsByCategory } from '../../lib/data';
 
 export async function generateStaticParams() {
   return categories.map((c) => ({ slug: c.slug }));
