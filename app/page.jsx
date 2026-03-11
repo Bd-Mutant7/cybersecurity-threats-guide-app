@@ -1,185 +1,147 @@
 export const dynamic = 'force-dynamic';
 
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import SeverityBadge from '../../../components/SeverityBadge';
-import { threats, getThreatBySlug, getCategoryBySlug } from '../../../lib/data';
+import CategoryCard from '../components/CategoryCard';
+import ThreatCard from '../components/ThreatCard';
+import { categories, threats, severityOrder } from '../lib/data';
 
-export async function generateStaticParams() {
-  return threats.map((t) => ({ slug: t.slug }));
-}
+const topThreats = [...threats]
+  .sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity])
+  .slice(0, 6);
 
-export async function generateMetadata({ params }) {
-  const t = getThreatBySlug(params.slug);
-  if (!t) return {};
-  return {
-    title: `${t.title} | CyberGuide`,
-    description: t.description.slice(0, 155),
-  };
-}
+const stats = [
+  { n: '6', l: 'Categories' },
+  { n: '20+', l: 'Threats Covered' },
+  { n: '45+', l: 'Python Scripts' },
+  { n: '100%', l: 'Free & Open Source' },
+];
 
-export default function ThreatPage({ params }) {
-  const threat = getThreatBySlug(params.slug);
-  if (!threat) notFound();
-
-  const cat = getCategoryBySlug(threat.category);
-
+export default function HomePage() {
   return (
-    <div style={{ maxWidth: 860, margin: '0 auto', padding: '56px 24px 100px' }}>
-      {/* Breadcrumb */}
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 40, fontSize: 12, color: '#5a5a6e' }}>
-        <Link href="/" style={{ color: '#5a5a6e', textDecoration: 'none' }}>Home</Link>
-        <span>›</span>
-        <Link href={`/categories/${cat?.slug}`} style={{ color: cat?.color || '#e8a030', textDecoration: 'none' }}>
-          {cat?.title}
-        </Link>
-        <span>›</span>
-        <span style={{ color: '#8a8790' }}>{threat.title}</span>
-      </div>
+    <div>
+      {/* Hero */}
+      <section style={{
+        padding: '90px 48px 72px',
+        maxWidth: 780, margin: '0 auto', textAlign: 'center',
+      }}>
+        <div style={{
+          display: 'inline-block', fontSize: 11, fontWeight: 600,
+          letterSpacing: '0.18em', color: '#e8a030',
+          background: 'rgba(232,160,48,0.1)', border: '1px solid rgba(232,160,48,0.25)',
+          borderRadius: 99, padding: '5px 16px', marginBottom: 32, textTransform: 'uppercase',
+        }}>Educational Resource · MIT Licensed</div>
 
-      {/* Header */}
-      <div style={{ marginBottom: 48 }}>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
-          <SeverityBadge severity={threat.severity} size="lg" />
-          <span style={{
-            fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
-            color: cat?.color || '#e8a030', background: cat?.colorDim,
-            border: `1px solid ${cat?.colorBorder}`, borderRadius: 99, padding: '4px 12px',
-          }}>{cat?.icon} {cat?.title}</span>
-        </div>
         <h1 style={{
-          fontFamily: "'DM Serif Display', serif", fontSize: 'clamp(32px,5vw,52px)',
-          color: '#f0ede8', fontWeight: 400, margin: '0 0 8px', letterSpacing: '-0.02em',
-        }}>{threat.title}</h1>
-        <p style={{ fontSize: 16, color: '#6b8cde', margin: '0 0 20px', fontStyle: 'italic' }}>{threat.subtitle}</p>
-        <p style={{ fontSize: 16, color: '#8a8790', lineHeight: 1.75, margin: 0, maxWidth: 680 }}>{threat.description}</p>
-        <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {threat.tags.map((tag) => (
-            <span key={tag} style={{
-              fontSize: 11, color: '#3a3a4e', background: 'rgba(255,255,255,0.04)',
-              border: '1px solid #2a2a2f', borderRadius: 6, padding: '3px 9px',
-            }}>#{tag}</span>
-          ))}
-        </div>
-      </div>
+          fontFamily: "'DM Serif Display', serif",
+          fontSize: 'clamp(38px,6vw,68px)', fontWeight: 400,
+          color: '#f0ede8', lineHeight: 1.1, letterSpacing: '-0.02em', margin: '0 0 24px',
+        }}>
+          Understand every<br />
+          <span style={{
+            background: 'linear-gradient(135deg,#e8a030 0%,#f5c870 50%,#e8a030 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>cyber threat</span>
+        </h1>
 
-      {/* How it works */}
-      <Section title="How It Works" icon="◈" color="#6b8cde">
-        <ol style={{ paddingLeft: 20, margin: 0 }}>
-          {threat.howItWorks.map((step, i) => (
-            <li key={i} style={{
-              fontSize: 14, color: '#8a8790', lineHeight: 1.75, marginBottom: 10,
-              paddingLeft: 6,
-            }}>
-              <span style={{ color: '#c8c4be' }}>{step}</span>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      {/* Types */}
-      {threat.types && (
-        <Section title="Attack Types" icon="⬡" color="#fb923c">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {threat.types.map((type, i) => (
-              <div key={i} style={{
-                background: '#0f0f11', border: '1px solid #2a2a2f', borderRadius: 10,
-                padding: '14px 18px',
-              }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#fb923c' }}>{type.name}</span>
-                <span style={{ fontSize: 13, color: '#6a6a7e', marginLeft: 10 }}>— {type.desc}</span>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* Detection */}
-      <Section title="Detection Methods" icon="◉" color="#4ade80">
-        <ul style={{ paddingLeft: 0, margin: 0, listStyle: 'none' }}>
-          {threat.detection.map((d, i) => (
-            <li key={i} style={{
-              fontSize: 14, color: '#8a8790', lineHeight: 1.7, marginBottom: 10,
-              paddingLeft: 22, position: 'relative',
-            }}>
-              <span style={{ position: 'absolute', left: 0, color: '#4ade80', fontWeight: 700 }}>✓</span>
-              <span style={{ color: '#c8c4be' }}>{d}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      {/* Prevention */}
-      <Section title="Prevention Strategies" icon="⊕" color="#e8a030">
-        <ul style={{ paddingLeft: 0, margin: 0, listStyle: 'none' }}>
-          {threat.prevention.map((p, i) => (
-            <li key={i} style={{
-              fontSize: 14, color: '#8a8790', lineHeight: 1.7, marginBottom: 10,
-              paddingLeft: 22, position: 'relative',
-            }}>
-              <span style={{ position: 'absolute', left: 0, color: '#e8a030', fontWeight: 700 }}>→</span>
-              <span style={{ color: '#c8c4be' }}>{p}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      {/* Code example */}
-      {threat.codeExample && (
-        <Section title="Code Example" icon="⬢" color="#a78bfa">
-          <pre style={{ margin: 0 }}><code>{threat.codeExample}</code></pre>
-        </Section>
-      )}
-
-      {/* Source link */}
-      <div style={{
-        marginTop: 48, background: '#161618', border: '1px solid #2a2a2f',
-        borderRadius: 14, padding: '22px 28px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16,
-      }}>
-        <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: '#f0ede8', margin: '0 0 3px' }}>Explore the full source code</p>
-          <p style={{ fontSize: 12, color: '#5a5a6e', margin: 0, fontFamily: "'JetBrains Mono', monospace" }}>
-            {threat.repoPath}/
-          </p>
-        </div>
-        <a href={`https://github.com/Bd-Mutant7/Cybersecurity-Threats-Guide/tree/main/${threat.repoPath}`}
-          target="_blank" rel="noopener noreferrer"
-          style={{ background: 'rgba(232,160,48,0.1)', border: '1px solid rgba(232,160,48,0.3)',
-            borderRadius: 9, padding: '9px 20px', color: '#e8a030',
-            fontSize: 13, textDecoration: 'none', fontWeight: 600 }}>
-          View on GitHub →
-        </a>
-      </div>
-
-      {/* Next/prev-like: other threats in category */}
-      <div style={{ marginTop: 32, paddingTop: 32, borderTop: '1px solid #1e1e26' }}>
-        <p style={{ fontSize: 11, color: '#3a3a4e', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>
-          More in {cat?.title}
+        <p style={{
+          fontSize: 17, color: '#8a8790', lineHeight: 1.75,
+          maxWidth: 540, margin: '0 auto 40px',
+        }}>
+          A comprehensive guide to cybersecurity threats — covering detection techniques,
+          prevention strategies, and real code examples for defenders, developers, and students.
         </p>
-        <Link href={`/categories/${cat?.slug}`} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          fontSize: 13, color: cat?.color || '#e8a030', textDecoration: 'none', fontWeight: 500,
-        }}>← Back to {cat?.title}</Link>
-      </div>
-    </div>
-  );
-}
 
-function Section({ title, icon, color, children }) {
-  return (
-    <div style={{
-      marginBottom: 40, paddingBottom: 40,
-      borderBottom: '1px solid #1e1e26',
-    }}>
-      <h2 style={{
-        fontSize: 14, fontWeight: 600, color: color,
-        letterSpacing: '0.08em', textTransform: 'uppercase',
-        marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8,
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/categories/network-security" style={{
+            background: 'linear-gradient(135deg,#e8a030,#c47a18)', border: 'none',
+            borderRadius: 10, padding: '13px 28px', color: '#0f0f11',
+            fontWeight: 700, fontSize: 14, textDecoration: 'none',
+            boxShadow: '0 8px 32px rgba(232,160,48,0.25)',
+          }}>Explore Categories →</Link>
+          <Link href="/ask" style={{
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 10, padding: '13px 28px', color: '#c8c4be',
+            fontSize: 14, textDecoration: 'none', fontWeight: 500,
+          }}>Ask AI Assistant</Link>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section style={{
+        maxWidth: 740, margin: '0 auto 72px',
+        background: '#161618', border: '1px solid #2a2a2f',
+        borderRadius: 16, overflow: 'hidden',
+        display: 'flex',
       }}>
-        <span>{icon}</span> {title}
-      </h2>
-      {children}
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            flex: 1, padding: '26px 16px', textAlign: 'center',
+            borderRight: i < stats.length - 1 ? '1px solid #2a2a2f' : 'none',
+          }}>
+            <div style={{
+              fontSize: 28, fontWeight: 700, color: '#f0ede8',
+              fontFamily: "'DM Serif Display', serif",
+            }}>{s.n}</div>
+            <div style={{ fontSize: 11, color: '#5a5a6e', marginTop: 4, letterSpacing: '0.06em' }}>{s.l}</div>
+          </div>
+        ))}
+      </section>
+
+      {/* Categories grid */}
+      <section style={{ maxWidth: 1040, margin: '0 auto 80px', padding: '0 24px' }}>
+        <div style={{ marginBottom: 36 }}>
+          <p style={{ fontSize: 11, letterSpacing: '0.16em', color: '#e8a030', textTransform: 'uppercase', marginBottom: 10 }}>All Categories</p>
+          <h2 style={{
+            fontFamily: "'DM Serif Display', serif", fontSize: 36, color: '#f0ede8',
+            fontWeight: 400, margin: 0, letterSpacing: '-0.02em',
+          }}>Six domains of security</h2>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 16,
+        }}>
+          {categories.map((cat, i) => (
+            <CategoryCard key={cat.slug} category={cat} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* Top threats */}
+      <section style={{
+        maxWidth: 1040, margin: '0 auto 80px', padding: '0 24px',
+        borderTop: '1px solid #1e1e26', paddingTop: 64,
+      }}>
+        <div style={{ marginBottom: 36, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <p style={{ fontSize: 11, letterSpacing: '0.16em', color: '#e8a030', textTransform: 'uppercase', marginBottom: 10 }}>Priority Threats</p>
+            <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 36, color: '#f0ede8', fontWeight: 400, margin: 0 }}>Highest severity</h2>
+          </div>
+          <Link href="/categories/network-security" style={{ fontSize: 13, color: '#e8a030', textDecoration: 'none' }}>View all threats →</Link>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
+          {topThreats.map((t) => <ThreatCard key={t.slug} threat={t} />)}
+        </div>
+      </section>
+
+      {/* Disclaimer banner */}
+      <section style={{ maxWidth: 1040, margin: '0 auto 80px', padding: '0 24px' }}>
+        <div style={{
+          background: 'rgba(248,113,113,0.05)', border: '1px solid rgba(248,113,113,0.2)',
+          borderRadius: 14, padding: '20px 28px',
+          display: 'flex', gap: 16, alignItems: 'flex-start',
+        }}>
+          <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>⚠</span>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#f87171', margin: '0 0 4px' }}>Educational Purposes Only</p>
+            <p style={{ fontSize: 12, color: '#6a6a7e', margin: 0, lineHeight: 1.6 }}>
+              All content in this guide is for educational and defensive security purposes only. Do not apply these
+              techniques to systems you do not own or have explicit written permission to test. The authors are not
+              responsible for any misuse of this information.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
