@@ -1,7 +1,9 @@
+export const dynamic = 'force-dynamic';
+
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import SeverityBadge from '../../../components/SeverityBadge';
-import { threats, getThreatBySlug, getCategoryBySlug } from '../../../lib/data';
+import SeverityBadge from '../../components/SeverityBadge';
+import { threats, getThreatBySlug, getCategoryBySlug } from '../../lib/data';
 
 export async function generateStaticParams() {
   return threats.map((t) => ({ slug: t.slug }));
