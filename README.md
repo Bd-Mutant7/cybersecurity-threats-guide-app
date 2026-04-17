@@ -2,7 +2,13 @@
 
 A Next.js web application for the [Cybersecurity Threats & Vulnerabilities Guide](https://github.com/Bd-Mutant7/Cybersecurity-Threats-Guide).
 
+
+
+
 [![Support](https://img.shields.io/badge/Support-Paystack-00C3F7?style=for-the-badge&logo=paypal&logoColor=white)](https://paystack.shop/pay/bd-mutant7)
+
+
+
 
 ## Features
 
